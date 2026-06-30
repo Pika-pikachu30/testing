@@ -2,29 +2,18 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import os
 
 HTML = """
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <body>
 
-<h1>OpenClaw XSS Test Page</h1>
+<h1>Entity Render Test</h1>
 
-<p>Encoded HTML:</p>
-
-<pre>
-&lt;script&gt;
-document.body.innerHTML="XSS_EXECUTED";
-&lt;/script&gt;
-</pre>
-
-<p>Image test:</p>
-
-<pre>
-&lt;img src=x onerror="document.body.innerHTML='IMG_XSS_EXECUTED'"&gt;
-</pre>
+&lt;b&gt;OPENCLAW_HTML_EXECUTED&lt;/b&gt;
 
 </body>
 </html>
 """
+
 
 
 class Handler(BaseHTTPRequestHandler):
