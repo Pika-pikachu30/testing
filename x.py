@@ -4,13 +4,25 @@ import os
 HTML = """
 <!doctype html>
 <html>
+<head>
+<title>OpenClaw CDP Snapshot Test</title>
+</head>
+
 <body>
 
-<h1>OpenClaw Markdown XSS Test</h1>
+<h1>Browser Snapshot XSS Test</h1>
 
-<a href="javascript:document.body.innerHTML='XSS_EXECUTED'">
-CLICK_ME
-</a>
+<div id="test">
+
+    <p>This is normal content.</p>
+
+    <!-- Attacker-controlled HTML -->
+    <img 
+      src="invalid-image"
+      onerror="document.body.setAttribute('data-xss-test','XSS_EXECUTED')"
+    >
+
+</div>
 
 </body>
 </html>
@@ -32,10 +44,13 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
 
 
-port = int(os.environ.get("PORT",8080))
+port = int(os.environ.get("PORT", 8080))
 
-server = HTTPServer(("0.0.0.0",port),Handler)
+server = HTTPServer(
+    ("0.0.0.0", port),
+    Handler
+)
 
-print(port)
+print(f"Server running on port {port}")
 
 server.serve_forever()
