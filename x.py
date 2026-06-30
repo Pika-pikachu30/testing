@@ -7,10 +7,7 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
 
         self.wfile.write(
-            b"<script>alert('XSS')</script>"
+            b"UNIQUE_XSS_TEST_12345"
         )
 
-server = HTTPServer(("0.0.0.0", 8080), Handler)
-
-print("running")
-server.serve_forever()
+HTTPServer(("0.0.0.0",8080),Handler).serve_forever()
