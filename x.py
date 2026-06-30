@@ -6,22 +6,32 @@ HTML = """
 <html>
 <body>
 
-<h1>Entity Render Test</h1>
+<h1>OpenClaw pageerror XSS test</h1>
 
-&lt;b&gt;OPENCLAW_HTML_EXECUTED&lt;/b&gt;
+<script>
+setTimeout(() => {
+    throw new Error('<img src=x onerror="document.body.innerHTML=\\'XSS_EXECUTED\\'">');
+}, 100);
+</script>
 
 </body>
 </html>
 """
 
 
-
 class Handler(BaseHTTPRequestHandler):
+
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-Type", "text/html")
         self.end_headers()
         self.wfile.write(HTML.encode())
+
+
+    def do_HEAD(self):
+        self.send_response(200)
+        self.send_header("Content-Type", "text/html")
+        self.end_headers()
 
 
 port = int(os.environ.get("PORT", 8080))
